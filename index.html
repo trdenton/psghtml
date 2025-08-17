@@ -1,6 +1,7 @@
 <html>
 <head>
 <title>PSG chord explorer</title>
+<link rel="stylesheet" href="../dm.css">
 <style>
 
 td {
@@ -19,7 +20,7 @@ function fretboardCreate(psg, elem_id, chord) {
     const body = document.body,
           tbl = document.createElement('table');
     tbl.style.width = '100px';
-    tbl.style.border = '1px solid black';
+    tbl.style.border = '1px solid gray';
 
     // first row - frets
     const firstRow = tbl.insertRow();
@@ -39,27 +40,26 @@ function fretboardCreate(psg, elem_id, chord) {
             note = psg.getNoteAt(str, fret);
             var text = note.getName().padStart(4," ");
             td.appendChild(document.createTextNode(text));
-            td.style.border = '1px solid black';
+            td.style.border = '1px solid gray';
 
             note_pos = chord.contains(note);
-            bg_color = "white";
+            bg_color = "#150F14";
             switch(note_pos) {
                 case 0:
                     break;
                 case 1:
-                    bg_color = "lightgreen";
+                    bg_color = "green";
                     break;
                 case 2:
-                    bg_color = "yellow";
+                    bg_color = "purple";
                     break;
                 case 3:
-                    bg_color = "orange";
+                    bg_color = "maroon";
                     break;
                 case 4:
-                    bg_color = "cyan";
+                    bg_color = "darkblue";
                     break;
                 default:
-                    bg_color = "white";
                     break;
             }
 
@@ -115,10 +115,10 @@ document.addEventListener('DOMContentLoaded', function() {
 <div id="legend">
 <table>
 <tr>
-<td style="background-color: lightgreen;">root</td>
-<td style="background-color: yellow;">third</td>
-<td style="background-color: orange;">fifth</td>
-<td style="background-color: cyan;">seventh</td>
+<td style="background-color: green;">root</td>
+<td style="background-color: purple;">third</td>
+<td style="background-color: maroon;">fifth</td>
+<td style="background-color: darkblue;">seventh</td>
 </tr>
 </table>
 </div>
@@ -172,6 +172,9 @@ Chord type:
 </div>
 <p>
 PRs welcome at <a href='https://github.com/trdenton/psghtml'>github/trdenton/psghtml</a>
+</p>
+<p>
+<a href="../index.html">Home</a>
 </p>
 </body>
 <html>
