@@ -8,6 +8,7 @@ class Note {
             this.num = this.mapNoteToNumber(name_or_num);
         } else {
             this.num = name_or_num;
+            this.name = this.mapNoteToName(this.num);
         }
     }
 
@@ -55,6 +56,10 @@ class Note {
 
     addHalfSteps(num) {
         return new Note(this.num + num);
+    }
+
+    getName() {
+        return this.name;
     }
 }
 
@@ -124,6 +129,10 @@ class PedalSteelGuitar {
         }
         return result;
     }
+
+    getNoteAt(string_index, fret) {
+        return this.strings[string_index].addHalfSteps(fret);
+    }
 }
 
 class Chord {
@@ -189,24 +198,3 @@ class Chord {
         return 0
     }
 }
-
-n = new Note("C#");
-console.log(n.num);
-console.log(n.mapNoteToName(62));
-
-m = new Note("C#6");
-
-console.log(m.equalIgnoreOctave(n));
-o = m.addHalfSteps(1);
-console.log(o.num);
-
-psg = new PedalSteelGuitar();
-
-psg.pedalPush("A");
-psg.pedalPush("A");
-psg.pedalRelease("A");
-notes = psg.fret(0);
-console.log(notes);
-
-c = new Chord("C#","M");
-console.log(c);
