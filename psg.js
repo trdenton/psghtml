@@ -1,0 +1,145 @@
+
+
+class Note {
+
+    constructor(name_or_num) {
+        if (typeof(name_or_num) === 'string') {
+            this.name = name_or_num;
+            this.num = this.mapNoteToNumber(name_or_num);
+        } else {
+            this.num = name_or_num;
+        }
+    }
+
+    mapNoteToNumber(note) {
+        var base_nums = {};
+        base_nums["A"] = 21;
+        base_nums["B"] = 23;
+        base_nums["C"] = 12; // c0
+        base_nums["D"] = 14;
+        base_nums["E"] = 16;
+        base_nums["F"] = 17;
+        base_nums["G"] = 19;
+
+        var num_sharps = (note.match(/#/g) || []).length;
+        var num_flats = (note.match(/b/g) || []).length;
+
+        var note_mod = num_sharps - num_flats;
+
+        var base_note = note[0];
+        note = note.replace(/[#b]/g,"");
+        
+        var octave = 4;
+        if (note.length > 1) {
+            octave = note[note.length-1];
+        }
+        return base_nums[base_note] + octave*12 + note_mod;
+    }
+
+    mapNoteToName(num) {
+        var octave = Math.floor(num/12) - 1;
+        var step = num % 12;
+        var names = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+        var base = names[step];
+        return base + octave;
+    }
+
+    equalIgnoreOctave(other_note) {
+        var num1 = this.num;
+        var num2 = other_note.num;
+        if ((num1 - num2)%12 == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    addHalfSteps(num) {
+        return new Note(this.num + num);
+    }
+}
+
+class PedalSteelGuitar {
+    constructor() {
+        this.num_frets = 25;
+        this.notes = ["F#4","D#4","G#4","E4","B4","G#3","F#3","E3","D3","B3"];
+        this.strings = [];
+        this.pedals = [];
+        this.actuated = {}
+
+        // pedals
+        this.pedals["A"] = [0, 0, 0, 0, 2, 0, 0, 0, 0, 2];
+        this.pedals["B"] = [0, 0, 1, 0, 0, 1, 0, 0, 0, 0];
+        this.pedals["C"] = [0, 0, 0, 2, 2, 0, 0, 0, 0, 0];
+
+        // levers
+        this.pedals["D"] = [0,-1, 0, 0, 0, 0, 0, 0,-1, 0];
+        this.pedals["E"] = [0, 0, 0,-1, 0, 0, 0,-1, 0, 0];
+        this.pedals["F"] = [0, 0, 0, 1, 0, 0, 0, 1, 0, 0];
+        this.pedals["G"] = [1, 0, 0, 0, 0, 0, 1, 0, 0, 0];
+
+        for(var i = 0; i < this.notes.length; i++) {
+            var string = new Note(this.notes[i]);
+            this.strings.push(string);
+        }
+    }
+    
+    pedalPush(index) {
+        if (index in this.actuated) {
+            return;
+        }
+        this.actuated[index] = true;
+        var offsets = this.pedals[index];
+        for(var i = 0; i < offsets.length; i++) {
+            var note = this.strings[i];
+            var note = note.addHalfSteps(offsets[i]);
+            this.strings[i] = note;
+        }
+    }
+
+    pedalRelease(index) {
+        if (!(index in this.actuated)) {
+            return;
+        }
+        delete this.actuated[index];
+        var offsets = this.pedals[index];
+        for(var i = 0; i < offsets.length; i++) {
+            var note = this.strings[i];
+            var note = note.addHalfSteps(-offsets[i]);
+            this.strings[i] = note;
+        }
+    }
+
+    pedalToggle(index) {
+        if (index in this.actuated) {
+            this.pedalRelease(index);
+        } else {
+            this.pedalPush(index);
+        }
+    }
+
+    fret(num) {
+        var result = [];
+        for (var i = 0; i < this.strings.length; i++) {
+            result.push( this.strings[i].addHalfSteps(num) );
+        }
+        return result;
+    }
+}
+
+n = new Note("C#");
+console.log(n.num);
+console.log(n.mapNoteToName(62));
+
+m = new Note("C#6");
+
+console.log(m.equalIgnoreOctave(n));
+o = m.addHalfSteps(1);
+console.log(o.num);
+
+psg = new PedalSteelGuitar();
+
+psg.pedalPush("A");
+psg.pedalPush("A");
+psg.pedalRelease("A");
+notes = psg.fret(0);
+console.log(notes);
