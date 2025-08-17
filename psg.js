@@ -114,22 +114,6 @@ class PedalSteelGuitar {
         }
     }
 
-    pedalToggle(index) {
-        if (index in this.actuated) {
-            this.pedalRelease(index);
-        } else {
-            this.pedalPush(index);
-        }
-    }
-
-    fret(num) {
-        var result = [];
-        for (var i = 0; i < this.strings.length; i++) {
-            result.push( this.strings[i].addHalfSteps(num) );
-        }
-        return result;
-    }
-
     getNoteAt(string_index, fret) {
         return this.strings[string_index].addHalfSteps(fret);
     }
@@ -197,4 +181,22 @@ class Chord {
         }
         return 0
     }
+}
+
+class SixStringGuitar extends PedalSteelGuitar {
+    constructor() {
+        super();
+        this.num_frets = 25;
+        this.notes = ["E","B","G","D","A","E"];
+        this.strings = [];
+        this.pedals = [];
+        this.actuated = {}
+
+        for(var i = 0; i < this.notes.length; i++) {
+            var string = new Note(this.notes[i]);
+            this.strings.push(string);
+        }
+    }
+    pedalPush(index){}
+    pedalRelease(index){}
 }

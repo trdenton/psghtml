@@ -13,10 +13,9 @@ td {
 <script type='text/javascript'>
 
 NUM_FRETS = 24;
-NUM_STRINGS = 10;
 
-function fretboardCreate(psg, chord) {
-    const divFretboard = document.getElementById("fretboard");
+function fretboardCreate(psg, elem_id, chord) {
+    const divFretboard = document.getElementById(elem_id);
     const body = document.body,
           tbl = document.createElement('table');
     tbl.style.width = '100px';
@@ -33,7 +32,7 @@ function fretboardCreate(psg, chord) {
                 nut.appendChild(document.createTextNode(" "));
             }
     }
-    for (let str = 0; str < NUM_STRINGS; str++) {
+    for (let str = 0; str < psg.strings.length; str++) {
         const tr = tbl.insertRow();
         for (let fret = 0; fret < NUM_FRETS+1; fret++) {
             const td = tr.insertCell();
@@ -48,7 +47,7 @@ function fretboardCreate(psg, chord) {
                 case 0:
                     break;
                 case 1:
-                    bg_color = "green";
+                    bg_color = "lightgreen";
                     break;
                 case 2:
                     bg_color = "yellow";
@@ -98,12 +97,14 @@ function fretboardUpdate() {
     leverF ? document.psg.pedalPush("F") : document.psg.pedalRelease("F");
     leverG ? document.psg.pedalPush("G") : document.psg.pedalRelease("G");
 
-    fretboardCreate(document.psg, chord);
+    fretboardCreate(document.psg, 'fretboard', chord);
+    fretboardCreate(document.ssg, '6string', chord);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
     // Your JavaScript code to run on document load goes here
     document.psg = new PedalSteelGuitar();
+    document.ssg = new SixStringGuitar();
     fretboardUpdate();
 });
 
@@ -111,6 +112,16 @@ document.addEventListener('DOMContentLoaded', function() {
 </head>
 <body>
 <h1> PSG E9 chord explorer </h1>
+<div id="legend">
+<table>
+<tr>
+<td style="background-color: lightgreen;">root</td>
+<td style="background-color: yellow;">third</td>
+<td style="background-color: orange;">fifth</td>
+<td style="background-color: cyan;">seventh</td>
+</tr>
+</table>
+</div>
 <div id="fretboard"></div>
 <div id="pedals">
 Pedals:
@@ -154,6 +165,10 @@ Chord type:
     <option value="dim7">Dim7</option>
     <option value="dom7">Dom7</option>
 </select>
+</div>
+<br/>
+<h2>Six string</h2>
+<div id="6string">
 </div>
 </body>
 <html>
