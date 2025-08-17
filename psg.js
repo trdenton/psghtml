@@ -126,6 +126,70 @@ class PedalSteelGuitar {
     }
 }
 
+class Chord {
+    constructor(root, chord_type) {
+        this.name = root + chord_type;
+        this.note1 = new Note(root);
+        this.note4 = 0;
+        if (chord_type == "M") {
+            this.note2 = this.note1.addHalfSteps(4);
+            this.note3 = this.note2.addHalfSteps(3);
+        }
+        if (chord_type == "m") {
+            this.note2 = this.note1.addHalfSteps(3);
+            this.note3 = this.note2.addHalfSteps(4);
+        }
+        if (chord_type == "aug") {
+            this.note2 = this.note1.addHalfSteps(4);
+            this.note3 = this.note2.addHalfSteps(4);
+        }
+        if (chord_type == "dim") {
+            this.note2 = this.note1.addHalfSteps(3);
+            this.note3 = this.note2.addHalfSteps(3);
+        }
+        if (chord_type == "M7") {
+            this.note2 = this.note1.addHalfSteps(4);
+            this.note3 = this.note2.addHalfSteps(3);
+            this.note4 = this.note3.addHalfSteps(4);
+        }
+        if (chord_type == "dom7") {
+            this.note2 = this.note1.addHalfSteps(4);
+            this.note3 = this.note2.addHalfSteps(3);
+            this.note4 = this.note3.addHalfSteps(3);
+        }
+        if (chord_type == "m7") {
+            this.note2 = this.note1.addHalfSteps(3);
+            this.note3 = this.note2.addHalfSteps(4);
+            this.note4 = this.note3.addHalfSteps(3);
+        }
+        if (chord_type == "dim7") {
+            this.note2 = this.note1.addHalfSteps(3);
+            this.note3 = this.note2.addHalfSteps(3);
+            this.note4 = this.note3.addHalfSteps(3);
+        }
+    }
+
+    is_seventh() {
+        return this.note4 != 0;
+    }
+
+    contains(note) {
+        if (this.note1.equalIgnoreOctave(note)) {
+            return 1;
+        }
+        if (this.note2.equalIgnoreOctave(note)) {
+            return 2;
+        }
+        if (this.note3.equalIgnoreOctave(note)) {
+            return 3;
+        }
+        if (this.note4 != 0 && this.note4.equalIgnoreOctave(note)) {
+            return 4;
+        }
+        return 0
+    }
+}
+
 n = new Note("C#");
 console.log(n.num);
 console.log(n.mapNoteToName(62));
@@ -143,3 +207,6 @@ psg.pedalPush("A");
 psg.pedalRelease("A");
 notes = psg.fret(0);
 console.log(notes);
+
+c = new Chord("C#","M");
+console.log(c);
