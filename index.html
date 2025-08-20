@@ -23,15 +23,31 @@ function buildAllOptions(elem_id, chord) {
 
     const options = findChordPositions(chord);
     const firstRow = tbl.insertRow();
-    firstRow.insertCell().appendChild(document.createTextNode("fret")).border = '1px solid grey';
-    firstRow.insertCell().appendChild(document.createTextNode("pedals")).border = '1px solid grey';
-    firstRow.insertCell().appendChild(document.createTextNode("levers")).border = '1px solid grey';
+    var td = firstRow.insertCell();
+    td.appendChild(document.createTextNode("fret")).border = '1px solid grey';
+    td.style.border = '1px solid grey';
+
+    td = firstRow.insertCell();
+    td.appendChild(document.createTextNode("pedals")).border = '1px solid grey';
+    td.style.border = '1px solid grey';
+
+    td = firstRow.insertCell();
+    td.appendChild(document.createTextNode("levers")).border = '1px solid grey';
+    td.style.border = '1px solid grey';
 
     options.forEach((option) => {
         const row = tbl.insertRow();
-        row.insertCell().appendChild(document.createTextNode(option[0])).border = '1px solid grey';
-        row.insertCell().appendChild(document.createTextNode(option[1])).border = '1px solid grey';
-        row.insertCell().appendChild(document.createTextNode(option[2])).border = '1px solid grey';
+        var td = row.insertCell();
+        td.appendChild(document.createTextNode(option[0])).border = '1px solid grey';
+        td.style.border = '1px solid grey';
+
+        td = row.insertCell();
+        td.appendChild(document.createTextNode(option[1])).border = '1px solid grey';
+        td.style.border = '1px solid grey';
+
+        td = row.insertCell();
+        td.appendChild(document.createTextNode(option[2])).border = '1px solid grey';
+        td.style.border = '1px solid grey';
     });
 
     div.innerHTML = "";
@@ -194,13 +210,14 @@ Chord type:
 <h2>Six string</h2>
 <div id="6string">
 </div>
+<h2>All options</h2>
+<div id="alloptions">
+</div>
 <p>
 PRs welcome at <a href='https://github.com/trdenton/psghtml'>github/trdenton/psghtml</a>
 </p>
 <p>
 <a href="../index.html">Home</a>
 </p>
-<div id="alloptions">
-</div>
 </body>
 <html>
