@@ -133,7 +133,7 @@ function findChordPositions(chord) {
     // just iterate over every sane permutation of the fretboard
     // pedal combos: A, AB, B, BC, C
     // only use one lever at a time
-    // reinitialize
+    // returns array of [fret, pedal, lever] 
     var pedalOptions = ["", "A", "AB", "B", "BC", "C"]
     var leverOptions = ["", "D","E","F","G"]
 
@@ -154,7 +154,7 @@ function findChordPositions(chord) {
                 notes = psg.getNotesAt(fret);
                 if (chord.canBeMadeWith(notes)) {
                     output.push( [fret, pedal, lever] );
-                    console.log(`@ fret ${fret} with pedals ${pedal} and lever ${lever}`);
+                    //console.log(`@ fret ${fret} with pedals ${pedal} and lever ${lever}`);
                 }
             }
         });
@@ -274,4 +274,4 @@ class SixStringGuitar extends PedalSteelGuitar {
     pedalRelease(index){}
 }
 // for manual testing
-console.log(findChordPositions(new Chord("F#","dim7")));
+//console.log(findChordPositions(new Chord("F#","dim7")));

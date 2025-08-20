@@ -15,6 +15,29 @@ td {
 
 NUM_FRETS = 24;
 
+function buildAllOptions(elem_id, chord) {
+    const div = document.getElementById(elem_id);
+    const tbl = document.createElement('table');
+    tbl.style.width = '100px';
+    tbl.style.border = '1px solid gray';
+
+    const options = findChordPositions(chord);
+    const firstRow = tbl.insertRow();
+    firstRow.insertCell().appendChild(document.createTextNode("fret")).border = '1px solid grey';
+    firstRow.insertCell().appendChild(document.createTextNode("pedals")).border = '1px solid grey';
+    firstRow.insertCell().appendChild(document.createTextNode("levers")).border = '1px solid grey';
+
+    options.forEach((option) => {
+        const row = tbl.insertRow();
+        row.insertCell().appendChild(document.createTextNode(option[0])).border = '1px solid grey';
+        row.insertCell().appendChild(document.createTextNode(option[1])).border = '1px solid grey';
+        row.insertCell().appendChild(document.createTextNode(option[2])).border = '1px solid grey';
+    });
+
+    div.innerHTML = "";
+    div.appendChild(tbl);
+}
+
 function fretboardCreate(psg, elem_id, chord) {
     const divFretboard = document.getElementById(elem_id);
     const body = document.body,
@@ -99,6 +122,7 @@ function fretboardUpdate() {
 
     fretboardCreate(document.psg, 'fretboard', chord);
     fretboardCreate(document.ssg, '6string', chord);
+    buildAllOptions('alloptions', chord);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -176,5 +200,7 @@ PRs welcome at <a href='https://github.com/trdenton/psghtml'>github/trdenton/psg
 <p>
 <a href="../index.html">Home</a>
 </p>
+<div id="alloptions">
+</div>
 </body>
 <html>
