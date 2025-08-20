@@ -117,6 +117,49 @@ class PedalSteelGuitar {
     getNoteAt(string_index, fret) {
         return this.strings[string_index].addHalfSteps(fret);
     }
+
+    getNotesAt(fret) {
+        var notes = [];
+        for(var i = 0; i < this.strings.length; i++) {
+            var note = this.strings[i].addHalfSteps(fret);
+            notes.push(note);
+        } 
+        return notes;
+    }
+
+}
+
+function findChordPositions(chord) {
+    // just iterate over every sane permutation of the fretboard
+    // pedal combos: A, AB, B, BC, C
+    // only use one lever at a time
+    // reinitialize
+    var pedalOptions = ["", "A", "AB", "B", "BC", "C"]
+    var leverOptions = ["", "D","E","F","G"]
+
+    var output = []
+    pedalOptions.forEach((pedal) => {
+        leverOptions.forEach((lever) => {
+            var psg = new PedalSteelGuitar();
+            for(var i = 0; i < pedal.length; i++) {
+                var p = pedal[i];
+                if (p != "") {
+                    psg.pedalPush(p);
+                }
+            }
+            if (lever != "") {
+                psg.pedalPush(lever);
+            }
+            for(var fret = 0; fret < 12; fret++) {
+                notes = psg.getNotesAt(fret);
+                if (chord.canBeMadeWith(notes)) {
+                    output.push( [fret, pedal, lever] );
+                    console.log(`@ fret ${fret} with pedals ${pedal} and lever ${lever}`);
+                }
+            }
+        });
+    });
+    return output;
 }
 
 class Chord {
@@ -181,6 +224,36 @@ class Chord {
         }
         return 0
     }
+
+    canBeMadeWith(notes) {
+        var has_root = false;
+        var has_third = false;
+        var has_fifth = false;
+        var has_seventh = false;
+        for(var i = 0; i < notes.length; i++) {
+            var noteIndex = this.contains(notes[i]);
+            switch(noteIndex) {
+                case 1:
+                    has_root = true;
+                    break;
+                case 2:
+                    has_third = true;
+                    break;
+                case 3:
+                    has_fifth = true;
+                    break;
+                case 4:
+                    has_seventh = true;
+                    break;
+                case 0:
+                    break;
+            }
+        }
+        if (has_root && has_third && has_fifth && (has_seventh | !this.is_seventh())) {
+            return true;
+        }
+        return false;
+    }
 }
 
 class SixStringGuitar extends PedalSteelGuitar {
@@ -200,3 +273,5 @@ class SixStringGuitar extends PedalSteelGuitar {
     pedalPush(index){}
     pedalRelease(index){}
 }
+// for manual testing
+console.log(findChordPositions(new Chord("F#","dim7")));
