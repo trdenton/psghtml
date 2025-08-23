@@ -55,38 +55,31 @@ function buildAllOptions(elem_id, chord) {
     td.appendChild(document.createTextNode("fret")).border = '1px solid grey';
     td.style.border = '1px solid grey';
 
-    td = firstRow.insertCell();
-    td.appendChild(document.createTextNode("pedals")).border = '1px solid grey';
-    td.style.border = '1px solid grey';
-
-    td = firstRow.insertCell();
-    td.appendChild(document.createTextNode("levers")).border = '1px solid grey';
-    td.style.border = '1px solid grey';
-
-    td = firstRow.insertCell();
-    td.appendChild(document.createTextNode("strings")).border = '1px solid grey';
-    td.style.border = '1px solid grey';
-
-    options.forEach((option) => {
+    function newRow(fret) {
         const row = tbl.insertRow();
         var td = row.insertCell();
-        td.appendChild(document.createTextNode(option[0])).border = '1px solid grey';
+        td.appendChild(document.createTextNode(fret)).border = '1px solid grey';
         td.style.border = '1px solid grey';
 
-        td = row.insertCell();
-        td.appendChild(document.createTextNode(option[1])).border = '1px solid grey';
-        td.style.border = '1px solid grey';
-
-        td = row.insertCell();
-        td.appendChild(document.createTextNode(option[2])).border = '1px solid grey';
-        td.style.border = '1px solid grey';
-
-        td = row.insertCell();
+        return row;
+    }
+    var lastFret = -1;
+    var row;
+    options.forEach((option) => {
+        var fret = option[0];
+        if (fret != lastFret) {
+            row = newRow(fret);    
+            lastFret = fret;
+        }
+        var td = row.insertCell();
+        var desc = document.createElement('div');
+        desc.textContent = `${option[1]} ${option[2]}`;
+        td.appendChild(desc);
         for(var i = 0; i < option[3].length; ++i) {
             var noteType = option[3][i];
             var newDiv = document.createElement('div');
             newDiv.className = noteTypeToClassName(noteType);
-            newDiv.textContent = i;
+            newDiv.textContent = i+1;
             td.appendChild(newDiv);
         }
         td.border = '1px solid grey';
