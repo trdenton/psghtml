@@ -134,31 +134,38 @@ function findChordPositions(chord) {
     // pedal combos: A, AB, B, BC, C
     // only use one lever at a time
     // returns array of [fret, pedal, lever] 
-    var pedalOptions = ["", "A", "AB", "B", "BC", "C"]
-    var leverOptions = ["", "D","E","F","G"]
+    var pedalOptions = ["", "A", "AB", "B", "BC", "C"];
+    var leverOptions = ["", "D","E","F","G"];
 
-    var output = []
-    pedalOptions.forEach((pedal) => {
-        leverOptions.forEach((lever) => {
-            var psg = new PedalSteelGuitar();
-            for(var i = 0; i < pedal.length; i++) {
-                var p = pedal[i];
-                if (p != "") {
-                    psg.pedalPush(p);
+    var output = [];
+    for(var fret = 0; fret < 12; fret++) {
+        // use this to only output unique grips
+        // otherwise a pedal that doesnt affect the grip double-counts
+        var stringCombos = [];
+        pedalOptions.forEach((pedal) => {
+            leverOptions.forEach((lever) => {
+                var psg = new PedalSteelGuitar();
+                for(var i = 0; i < pedal.length; i++) {
+                    var p = pedal[i];
+                    if (p != "") {
+                        psg.pedalPush(p);
+                    }
                 }
-            }
-            if (lever != "") {
-                psg.pedalPush(lever);
-            }
-            for(var fret = 0; fret < 12; fret++) {
+                if (lever != "") {
+                    psg.pedalPush(lever);
+                }
                 notes = psg.getNotesAt(fret);
                 if (chord.canBeMadeWith(notes)) {
-                    output.push( [fret, pedal, lever] );
-                    //console.log(`@ fret ${fret} with pedals ${pedal} and lever ${lever}`);
+                    const strings = chord.getStringMapping(notes);
+                    const stringCombo = strings.join(" ");
+                    if (!stringCombos.includes(stringCombo)) {
+                        output.push( [fret, pedal, lever, strings] );
+                        stringCombos.push(stringCombo);
+                    }
                 }
-            }
+            });
         });
-    });
+    }
     return output;
 }
 
@@ -214,13 +221,13 @@ class Chord {
             return 1;
         }
         if (this.note2.equalIgnoreOctave(note)) {
-            return 2;
-        }
-        if (this.note3.equalIgnoreOctave(note)) {
             return 3;
         }
+        if (this.note3.equalIgnoreOctave(note)) {
+            return 5;
+        }
         if (this.note4 != 0 && this.note4.equalIgnoreOctave(note)) {
-            return 4;
+            return 7;
         }
         return 0
     }
@@ -230,19 +237,20 @@ class Chord {
         var has_third = false;
         var has_fifth = false;
         var has_seventh = false;
+        var strings = [];
         for(var i = 0; i < notes.length; i++) {
             var noteIndex = this.contains(notes[i]);
             switch(noteIndex) {
                 case 1:
                     has_root = true;
                     break;
-                case 2:
+                case 3:
                     has_third = true;
                     break;
-                case 3:
+                case 5:
                     has_fifth = true;
                     break;
-                case 4:
+                case 7:
                     has_seventh = true;
                     break;
                 case 0:
@@ -253,6 +261,15 @@ class Chord {
             return true;
         }
         return false;
+    }
+
+    getStringMapping(notes) {
+        var strings = [];
+        for(var i = 0; i < notes.length; ++i) {
+            var noteIndex = this.contains(notes[i]);
+            strings.push(noteIndex);
+        }
+        return strings;
     }
 }
 
@@ -274,4 +291,4 @@ class SixStringGuitar extends PedalSteelGuitar {
     pedalRelease(index){}
 }
 // for manual testing
-//console.log(findChordPositions(new Chord("F#","dim7")));
+console.log(findChordPositions(new Chord("F#","dim7")));

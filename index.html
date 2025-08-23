@@ -1,15 +1,43 @@
 <html>
 <head>
 <title>PSG chord explorer</title>
-<link rel="stylesheet" href="../dm.css">
 <style>
 
 td {
   white-space: pre;
   font-family: monospace;
+  background-color: #150F14;
 }
-</style>
 
+.root {
+    background-color: green;
+}
+
+.third {
+    background-color: purple;
+}
+
+.fifth {
+    background-color: maroon;
+}
+
+.seventh {
+    background-color: darkblue;
+}
+
+body {
+  background-color: #150F14;
+  color: #FAF0E6;
+}
+a:link { 
+  color:#D9D4F7;
+}
+a:visited { 
+  color:#8984A7;
+}
+
+</style>
+<link rel="stylesheet" href="../dm.css">
 <script src='psg.js' type='text/javascript'></script>
 <script type='text/javascript'>
 
@@ -35,6 +63,10 @@ function buildAllOptions(elem_id, chord) {
     td.appendChild(document.createTextNode("levers")).border = '1px solid grey';
     td.style.border = '1px solid grey';
 
+    td = firstRow.insertCell();
+    td.appendChild(document.createTextNode("strings")).border = '1px solid grey';
+    td.style.border = '1px solid grey';
+
     options.forEach((option) => {
         const row = tbl.insertRow();
         var td = row.insertCell();
@@ -48,12 +80,42 @@ function buildAllOptions(elem_id, chord) {
         td = row.insertCell();
         td.appendChild(document.createTextNode(option[2])).border = '1px solid grey';
         td.style.border = '1px solid grey';
+
+        td = row.insertCell();
+        for(var i = 0; i < option[3].length; ++i) {
+            var noteType = option[3][i];
+            var newDiv = document.createElement('div');
+            newDiv.className = noteTypeToClassName(noteType);
+            newDiv.textContent = i;
+            td.appendChild(newDiv);
+        }
+        td.border = '1px solid grey';
+        td.style.border = '1px solid grey';
     });
 
     div.innerHTML = "";
     div.appendChild(tbl);
 }
 
+function noteTypeToClassName(note_pos) {
+    switch(note_pos) {
+        case 1:
+            return "root";
+            break;
+        case 3:
+            return "third";
+            break;
+        case 5:
+            return "fifth";
+            break;
+        case 7:
+            return "seventh";
+            break;
+        default:
+            return "";
+            break;
+    }
+}
 function fretboardCreate(psg, elem_id, chord) {
     const divFretboard = document.getElementById(elem_id);
     const body = document.body,
@@ -82,27 +144,8 @@ function fretboardCreate(psg, elem_id, chord) {
             td.style.border = '1px solid gray';
 
             note_pos = chord.contains(note);
-            bg_color = "#150F14";
-            switch(note_pos) {
-                case 0:
-                    break;
-                case 1:
-                    bg_color = "green";
-                    break;
-                case 2:
-                    bg_color = "purple";
-                    break;
-                case 3:
-                    bg_color = "maroon";
-                    break;
-                case 4:
-                    bg_color = "darkblue";
-                    break;
-                default:
-                    break;
-            }
-
-            td.style.backgroundColor = bg_color;
+            className = noteTypeToClassName(note_pos);
+            td.className = className;
 
             // insert the nut
             if (fret == 0) {
