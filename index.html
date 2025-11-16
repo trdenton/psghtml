@@ -193,6 +193,19 @@ document.addEventListener('DOMContentLoaded', function() {
     fretboardUpdate();
 });
 
+function rmTabColumn() {
+    const table = document.getElementById("tab_table");
+
+    for(let r = 0; r < 12; ++r) {
+        const row = table.rows[r];
+        if (row.cells.length > 1)
+        {
+            const lastTd = row.cells[row.cells.length - 1];
+            row.removeChild(lastTd);
+        }
+    }
+}
+
 function addTabColumn(option) {
     // enter a blank spot
     if (typeof(option) === 'string') {
@@ -295,6 +308,8 @@ Chord type:
 
 <div id="tab">
 <h2>Tab</h3>
+<button id="addHypen" onclick="addTabColumn('-')">+space</button>
+<button id="addHypen" onclick="rmTabColumn()">bksp</button>
 <table id="tab_table">
 <tr id="top">
     <td>  </td>
