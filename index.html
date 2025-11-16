@@ -74,6 +74,9 @@ function buildAllOptions(elem_id, chord) {
         var td = row.insertCell();
         var desc = document.createElement('div');
         desc.textContent = `${option[1]} ${option[2]}`;
+        var addbtn = document.createElement('div');
+        addbtn.innerHTML="<button>+Tab</button>";
+        td.appendChild(addbtn);
         td.appendChild(desc);
         for(var i = 0; i < option[3].length; ++i) {
             var noteType = option[3][i];
@@ -82,6 +85,13 @@ function buildAllOptions(elem_id, chord) {
             newDiv.textContent = i+1;
             td.appendChild(newDiv);
         }
+        var myfunc = function btnFunc() {
+            var strings = option[3];
+            var pedals = option[1];
+            var levers = option[2];
+            addTabColumn(chord.name, fret, strings, pedals, levers);
+        };
+        addbtn.addEventListener('click', myfunc);
         td.border = '1px solid grey';
         td.style.border = '1px solid grey';
     });
@@ -184,6 +194,47 @@ document.addEventListener('DOMContentLoaded', function() {
     fretboardUpdate();
 });
 
+function rmTabColumn() {
+    const table = document.getElementById("tab_table");
+
+    for(let r = 0; r < 12; ++r) {
+        const row = table.rows[r];
+        if (row.cells.length > 1)
+        {
+            const lastTd = row.cells[row.cells.length - 1];
+            row.removeChild(lastTd);
+        }
+    }
+}
+
+function addTabChar(str) {
+    // enter a blank spot
+    document.getElementById("top").insertCell().innerHTML = " ";
+    for(let s = 1; s < 11; s++) {
+        document.getElementById("string"+s).insertCell().innerHTML = str[0];
+    }
+    document.getElementById("bottom").insertCell().innerHTML = " ";
+}
+
+function addTabColumn(chordName, fret, strings, pedals, levers) {
+    var pedals_levers = `${pedals} ${levers}`;
+    document.getElementById("top").insertCell().innerHTML = chordName;
+    document.getElementById("bottom").insertCell().innerHTML = pedals_levers;
+
+    var max_str_len = Math.max(chordName.length, String(fret).length, pedals_levers.length);
+
+    for(let s = 0; s < 10; s++) {
+        var text = "-".repeat(max_str_len+1);
+        if (strings[s] != 0) {
+            text = String(fret);
+            while (text.length < max_str_len+1) {
+                text += "-";
+            }
+        }
+        document.getElementById("string"+(s+1)).insertCell().innerHTML = text;
+    }
+}
+
 </script>
 </head>
 <body>
@@ -249,6 +300,51 @@ Chord type:
 <h2>All options</h2>
 <div id="alloptions">
 </div>
+
+<div id="tab">
+<h2>Tab</h3>
+<button id="addHypen" onclick="addTabChar('-')">+space</button>
+<button id="addHypen" onclick="rmTabColumn()">bksp</button>
+<table id="tab_table">
+<tr id="top">
+    <td>  </td>
+</tr>
+<tr id="string1">
+    <td>F#|</td>
+</tr>
+<tr id="string2">
+    <td>D#|</td>
+</tr>
+<tr id="string3">
+    <td>G#|</td>
+</tr>
+<tr id="string4">
+    <td>E |</td>
+</tr>
+<tr id="string5">
+    <td>B |</td>
+</tr>
+<tr id="string6">
+    <td>G#|</td>
+</tr>
+<tr id="string7">
+    <td>F#|</td>
+</tr>
+<tr id="string8">
+    <td>E |</td>
+</tr>
+<tr id="string9">
+    <td>D |</td>
+</tr>
+<tr id="string10">
+    <td>B |</td>
+</tr>
+<tr id="bottom">
+<td>  </td>
+</tr>
+</table>
+</div>
+
 <p>
 PRs welcome at <a href='https://github.com/trdenton/psghtml'>github/trdenton/psghtml</a>
 </p>
