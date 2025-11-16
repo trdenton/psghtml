@@ -231,7 +231,9 @@ function addTabColumn(chordName, fret, strings, pedals, levers) {
                 text += "-";
             }
         }
-        document.getElementById("string"+(s+1)).insertCell().innerHTML = text;
+        const newDiv = document.getElementById("string"+(s+1)).insertCell()
+        newDiv.innerHTML = text;
+        newDiv.className = noteTypeToClassName(strings[s]);
     }
 }
 
@@ -303,6 +305,15 @@ Chord type:
 
 <div id="tab">
 <h2>Tab</h3>
+<div id="legend">
+<table>
+<tr>
+<td style="background-color: green;">root</td>
+<td style="background-color: purple;">third</td>
+<td style="background-color: maroon;">fifth</td>
+<td style="background-color: darkblue;">seventh</td>
+</tr>
+</table>
 <button id="addHypen" onclick="addTabChar('-')">+space</button>
 <button id="addHypen" onclick="rmTabColumn()">bksp</button>
 <table id="tab_table">
