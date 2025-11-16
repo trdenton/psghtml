@@ -86,9 +86,10 @@ function buildAllOptions(elem_id, chord) {
             td.appendChild(newDiv);
         }
         var myfunc = function btnFunc() {
-            // should be chord, fret, strings, pedals, levers 
-            tabEntry = [chord.name, fret, option[3], option[1], option[2]];
-            addTabColumn(tabEntry);
+            var strings = option[3];
+            var pedals = option[1];
+            var levers = option[2];
+            addTabColumn(chord.name, fret, strings, pedals, levers);
         };
         addbtn.addEventListener('click', myfunc);
         td.border = '1px solid grey';
@@ -206,37 +207,31 @@ function rmTabColumn() {
     }
 }
 
-function addTabColumn(option) {
+function addTabChar(str) {
     // enter a blank spot
-    if (typeof(option) === 'string') {
-        document.getElementById("top").insertCell().innerHTML = " ";
-        for(let s = 1; s < 11; s++) {
-            document.getElementById("string"+s).insertCell().innerHTML = option[0];
-        }
-        document.getElementById("bottom").insertCell().innerHTML = " ";
-    } else {
-        // should be chord, fret, strings, pedals, levers 
-        var chord = option[0];
-        var fret = option[1];
-        var strings = option[2];
-        var pedals = option[3];
-        var levers = option[4];
-        var pedals_levers = `${pedals} ${levers}`;
-        document.getElementById("top").insertCell().innerHTML = chord;
-        document.getElementById("bottom").insertCell().innerHTML = pedals_levers;
+    document.getElementById("top").insertCell().innerHTML = " ";
+    for(let s = 1; s < 11; s++) {
+        document.getElementById("string"+s).insertCell().innerHTML = str[0];
+    }
+    document.getElementById("bottom").insertCell().innerHTML = " ";
+}
 
-        var max_str_len = Math.max(chord.length, String(fret).length, pedals_levers.length);
+function addTabColumn(chordName, fret, strings, pedals, levers) {
+    var pedals_levers = `${pedals} ${levers}`;
+    document.getElementById("top").insertCell().innerHTML = chordName;
+    document.getElementById("bottom").insertCell().innerHTML = pedals_levers;
 
-        for(let s = 0; s < 10; s++) {
-            var text = "-".repeat(max_str_len+1);
-            if (strings[s] != 0) {
-                text = String(fret);
-                while (text.length < max_str_len+1) {
-                    text += "-";
-                }
+    var max_str_len = Math.max(chordName.length, String(fret).length, pedals_levers.length);
+
+    for(let s = 0; s < 10; s++) {
+        var text = "-".repeat(max_str_len+1);
+        if (strings[s] != 0) {
+            text = String(fret);
+            while (text.length < max_str_len+1) {
+                text += "-";
             }
-            document.getElementById("string"+(s+1)).insertCell().innerHTML = text;
         }
+        document.getElementById("string"+(s+1)).insertCell().innerHTML = text;
     }
 }
 
@@ -308,7 +303,7 @@ Chord type:
 
 <div id="tab">
 <h2>Tab</h3>
-<button id="addHypen" onclick="addTabColumn('-')">+space</button>
+<button id="addHypen" onclick="addTabChar('-')">+space</button>
 <button id="addHypen" onclick="rmTabColumn()">bksp</button>
 <table id="tab_table">
 <tr id="top">
