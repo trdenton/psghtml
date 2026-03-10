@@ -42,9 +42,9 @@ a:visited {
 <script src='psg.js' type='text/javascript'></script>
 <script type='text/javascript'>
 
-const synth = new Tone.PolySynth(Tone.Synth).toDestination();
 
 function playChord(chordname, fret, strings, pedals, levers) {
+    const synth = new Tone.PolySynth(Tone.Synth).toDestination();
     const now = Tone.now();
 
     psg = new PedalSteelGuitar();
@@ -107,7 +107,6 @@ function buildAllOptions(elem_id, chord) {
 
         var playbtn = document.createElement('div');
         playbtn.innerHTML="<button>Play</button><br/>";
-        playbtn.addEventListener('click', myfunc);
         td.appendChild(playbtn);
 
         for(var i = 0; i < option[3].length; ++i) {
@@ -240,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function rmTabColumn() {
     const table = document.getElementById("tab_table");
 
-    for(let r = 0; r < 12; ++r) {
+    for(let r = 0; r < 13; ++r) {
         const row = table.rows[r];
         if (row.cells.length > 1)
         {
@@ -257,6 +256,7 @@ function addTabChar(str) {
         document.getElementById("string"+s).insertCell().innerHTML = str[0];
     }
     document.getElementById("bottom").insertCell().innerHTML = " ";
+    document.getElementById("btns").insertCell().innerHTML = " ";
 }
 
 function addTabColumn(chordName, fret, strings, pedals, levers) {
@@ -278,6 +278,16 @@ function addTabColumn(chordName, fret, strings, pedals, levers) {
         newDiv.innerHTML = text;
         newDiv.className = noteTypeToClassName(strings[s]);
     }
+
+    var playbtn = document.createElement('div');
+    playbtn.innerHTML="<button>Play</button><br/>";
+    document.getElementById("btns").insertCell().appendChild(playbtn);
+
+    var playfunc = function playbtnfunc() {
+        playChord(chordName, fret, strings, pedals, levers);
+    };
+    playbtn.addEventListener('click', playfunc);
+
 }
 
 </script>
@@ -363,6 +373,9 @@ Chord type:
 <button id="addHypen" onclick="rmTabColumn()">bksp</button>
 <table id="tab_table">
 <tr id="top">
+    <td>  </td>
+</tr>
+<tr id="btns">
     <td>  </td>
 </tr>
 <tr id="string1">
