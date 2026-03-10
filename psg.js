@@ -210,6 +210,14 @@ class Chord {
             this.note3 = this.note2.addHalfSteps(3);
             this.note4 = this.note3.addHalfSteps(3);
         }
+        if (chord_type == "sus2") { // D, E, A
+            this.note2 = this.note1.addHalfSteps(2);
+            this.note3 = this.note2.addHalfSteps(5);
+        }
+        if (chord_type == "sus4") { // D, G, A
+            this.note2 = this.note1.addHalfSteps(5);
+            this.note3 = this.note2.addHalfSteps(2);
+        }
     }
 
     is_seventh() {
