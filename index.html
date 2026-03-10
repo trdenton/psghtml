@@ -251,12 +251,31 @@ function rmTabColumn() {
 
 function addTabChar(str) {
     // enter a blank spot
-    document.getElementById("top").insertCell().innerHTML = " ";
+    var ts = "col"+Date.now();
+    var td_top = document.getElementById("top").insertCell();
+    td_top.innerHTML = " ";
+    td_top.classList.add(ts);
     for(let s = 1; s < 11; s++) {
-        document.getElementById("string"+s).insertCell().innerHTML = str[0];
+        var td_s = document.getElementById("string"+s).insertCell();
+        td_s.innerHTML = str[0];
+        td_s.classList.add(ts);
     }
-    document.getElementById("bottom").insertCell().innerHTML = " ";
-    document.getElementById("btns").insertCell().innerHTML = " ";
+    var td_bottom = document.getElementById("bottom").insertCell();
+    td_bottom.innerHTML = " ";
+    td_bottom.classList.add(ts);
+    var td_btns = document.getElementById("btns").insertCell();
+    td_btns.innerHTML = " ";
+    td_btns.classList.add(ts);
+
+    var rmbtn = document.createElement('div');
+    rmbtn.innerHTML="<button>-</button><br/>";
+    td_btns.appendChild(rmbtn);
+
+    var rmfunc = function rmbtnfunc() {
+        var elems = document.querySelectorAll("."+ts);
+        elems.forEach(e => {e.remove();});
+    };
+    rmbtn.addEventListener('click', rmfunc);
 }
 
 function addTabColumn(chordName, fret, strings, pedals, levers) {
