@@ -260,9 +260,15 @@ function addTabChar(str) {
 }
 
 function addTabColumn(chordName, fret, strings, pedals, levers) {
+    var ts = "col"+Date.now();
     var pedals_levers = `${pedals} ${levers}`;
-    document.getElementById("top").insertCell().innerHTML = chordName;
-    document.getElementById("bottom").insertCell().innerHTML = pedals_levers;
+    var td_top = document.getElementById("top").insertCell();
+    td_top.innerHTML = chordName;
+    td_top.classList.add(ts);
+
+    var td_bottom = document.getElementById("bottom").insertCell();
+    td_bottom.innerHTML = pedals_levers;
+    td_bottom.classList.add(ts);
 
     var max_str_len = Math.max(chordName.length, String(fret).length, pedals_levers.length);
 
@@ -274,19 +280,30 @@ function addTabColumn(chordName, fret, strings, pedals, levers) {
                 text += "-";
             }
         }
-        const newDiv = document.getElementById("string"+(s+1)).insertCell()
+        var newDiv = document.getElementById("string"+(s+1)).insertCell()
         newDiv.innerHTML = text;
         newDiv.className = noteTypeToClassName(strings[s]);
+        newDiv.classList.add(ts);
     }
 
     var playbtn = document.createElement('div');
     playbtn.innerHTML="<button>Play</button><br/>";
-    document.getElementById("btns").insertCell().appendChild(playbtn);
+    var rmbtn = document.createElement('div');
+    rmbtn.innerHTML="<button>-</button><br/>";
+    var td_btns = document.getElementById("btns").insertCell()
+    td_btns.appendChild(playbtn);
+    td_btns.appendChild(rmbtn);
+    td_btns.classList.add(ts);
 
     var playfunc = function playbtnfunc() {
         playChord(chordName, fret, strings, pedals, levers);
     };
     playbtn.addEventListener('click', playfunc);
+    var rmfunc = function rmbtnfunc() {
+        var elems = document.querySelectorAll("."+ts);
+        elems.forEach(e => {e.remove();});
+    };
+    rmbtn.addEventListener('click', rmfunc);
 
 }
 
