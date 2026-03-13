@@ -42,9 +42,30 @@ a:visited {
 <script src='psg.js' type='text/javascript'></script>
 <script type='text/javascript'>
 
+const sampler = new Tone.Sampler({
+	urls: {
+        "B3": "b3.mp3",
+        "B4": "b4.mp3",
+        "B5": "b5.mp3",
+        "D#4": "ds4.mp3",
+        "D#5": "ds5.mp3",
+        "D3": "d3.mp3",
+        "D4": "d4.mp3",
+        "E3": "e3.mp3",
+        "E4": "e4.mp3",
+        "E5": "e5.mp3",
+        "F#3": "fs3.mp3",
+        "F#4": "fs4.mp3",
+        "F#5": "fs5.mp3",
+        "G#3": "gs3.mp3",
+        "G#4": "gs4.mp3",
+        "G#5": "gs5.mp3",
+	},
+	release: 1,
+	baseUrl: "./samples/",
+}).toDestination();
 
 function playChord(chordname, fret, strings, pedals, levers) {
-    const synth = new Tone.PolySynth(Tone.Synth).toDestination();
     const now = Tone.now();
 
     psg = new PedalSteelGuitar();
@@ -62,8 +83,8 @@ function playChord(chordname, fret, strings, pedals, levers) {
         className = noteTypeToClassName(strings[s]);
         if (className != ""){
             note = psg.getNoteAt(s, fret).name;
-            synth.triggerAttack(note, now);
-            synth.triggerRelease(note, now+0.5);
+            sampler.triggerAttack(note, now);
+            sampler.triggerRelease(note, now+0.5);
         }
     }
 }
